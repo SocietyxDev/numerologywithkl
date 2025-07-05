@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Luxury Numerology Report</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -17,6 +16,7 @@
             --gold-color: #c5a267;
             --grid-gap: 25px;
             --success-color: #4caf50;
+            --error-color: #f44336;
         }
         
         * {
@@ -145,7 +145,7 @@
         }
         
         .error-message {
-            color: #d33;
+            color: var(--error-color);
             margin-top: 15px;
             text-align: center;
             font-weight: 600;
@@ -195,7 +195,7 @@
         
         .numbers-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             margin-top: 20px;
         }
@@ -236,9 +236,17 @@
             border: 1px solid #c8e0c8;
         }
         
+        .number-box.present .number-value {
+            color: var(--success-color);
+        }
+        
         .number-box.missing {
             background-color: #fdf0f0;
             border: 1px solid #f0c8c8;
+        }
+        
+        .number-box.missing .number-value {
+            color: var(--error-color);
         }
         
         .chart-item {
@@ -289,6 +297,14 @@
         
         .success-btn:hover {
             background-color: #3d8b40;
+        }
+        
+        .error-btn {
+            background-color: var(--error-color);
+        }
+        
+        .error-btn:hover {
+            background-color: #d32f2f;
         }
         
         .hidden {
@@ -399,16 +415,6 @@
             cursor: pointer;
         }
         
-        .pdf-options {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .pdf-options select {
-            flex: 1;
-        }
-        
         .add-section {
             margin-top: 20px;
         }
@@ -428,14 +434,99 @@
             margin-bottom: 15px;
         }
         
+        .section-controls {
+            display: flex;
+            gap: 5px;
+        }
+        
         .remove-section {
-            background-color: #f44336;
+            background-color: var(--error-color);
             color: white;
             border: none;
             border-radius: 4px;
             padding: 5px 10px;
             cursor: pointer;
             font-size: 12px;
+        }
+        
+        .remove-section:hover {
+            background-color: #d32f2f;
+        }
+        
+        .position-select {
+            flex: 1;
+        }
+        
+        .position-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .move-up, .move-down {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .move-up:hover, .move-down:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .section-position {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--success-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
         }
         
         @media (max-width: 900px) {
@@ -486,57 +577,6 @@
             .numbers-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-            
-            .pdf-options {
-                flex-direction: column;
-            }
-        }
-        
-        /* Custom toggle switch */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 24px;
-            margin-right: 10px;
-        }
-        
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 24px;
-        }
-        
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        
-        input:checked + .slider {
-            background-color: var(--success-color);
-        }
-        
-        input:checked + .slider:before {
-            transform: translateX(26px);
         }
     </style>
 </head>
@@ -568,19 +608,6 @@
                         <!-- Standard fields will be added here by JavaScript -->
                     </div>
                     
-                    <h3 style="margin-top: 30px;">PDF Options</h3>
-                    <div class="pdf-options">
-                        <select id="pdf-orientation">
-                            <option value="portrait">Portrait</option>
-                            <option value="landscape">Landscape</option>
-                        </select>
-                        <select id="pdf-format">
-                            <option value="a4">A4</option>
-                            <option value="letter">Letter</option>
-                            <option value="a5">A5</option>
-                        </select>
-                    </div>
-                    
                     <div class="add-section">
                         <h3>Add Custom Section</h3>
                         <div class="form-group">
@@ -590,6 +617,15 @@
                         <div class="form-group">
                             <label for="new-section-content">Content</label>
                             <textarea id="new-section-content" placeholder="Enter section content"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="section-position">Position in Report</label>
+                            <select id="section-position" class="position-select">
+                                <option value="after-core">After Core Numbers</option>
+                                <option value="after-personality">After Personality Numbers</option>
+                                <option value="after-missing">After Missing Numbers</option>
+                                <option value="before-footer">Before Footer</option>
+                            </select>
                         </div>
                         <button id="add-section-btn" class="success-btn">Add Custom Section</button>
                         <div id="add-section-success" class="success-message hidden"></div>
@@ -632,7 +668,7 @@
                     <!-- Chart content will be inserted here by JavaScript -->
                 </div>
                 <div class="actions">
-                    <button id="download-btn">Download as PDF</button>
+                    <button id="open-report-btn">Open Report in New Tab</button>
                     <button id="new-chart-btn" class="secondary-btn">Create New Report</button>
                     <button id="edit-report-btn" class="secondary-btn">Edit Report</button>
                     <button id="admin-toggle-btn" class="secondary-btn">Admin Panel</button>
@@ -652,7 +688,7 @@
         const numerologyForm = document.getElementById('numerology-form');
         const chartSection = document.getElementById('chart-section');
         const chartBox = document.getElementById('chart-box');
-        const downloadBtn = document.getElementById('download-btn');
+        const openReportBtn = document.getElementById('open-report-btn');
         const newChartBtn = document.getElementById('new-chart-btn');
         const editReportBtn = document.getElementById('edit-report-btn');
         const adminPanel = document.getElementById('admin-panel');
@@ -664,8 +700,8 @@
         const addSectionSuccess = document.getElementById('add-section-success');
         
         // Hardcoded credentials
-        const CORRECT_USERNAME = 'gaurav';
-        const CORRECT_PASSWORD = 'gaurav123';
+        const CORRECT_USERNAME = 'numerologist';
+        const CORRECT_PASSWORD = '12345';
         let isAdmin = false;
         
         // Standard fields configuration
@@ -746,9 +782,22 @@
                         <div class="custom-section" data-index="${index}">
                             <div class="custom-section-header">
                                 <h4>${section.title}</h4>
-                                <button class="remove-section" data-index="${index}">Remove</button>
+                                <div class="section-controls">
+                                    <button class="remove-section" data-index="${index}">Remove</button>
+                                </div>
                             </div>
                             <p>${section.content}</p>
+                            <div class="section-position">
+                                Current position: ${getPositionLabel(section.position)}
+                            </div>
+                            <div class="position-controls">
+                                <select class="position-select change-position" data-index="${index}">
+                                    <option value="after-core" ${section.position === 'after-core' ? 'selected' : ''}>After Core Numbers</option>
+                                    <option value="after-personality" ${section.position === 'after-personality' ? 'selected' : ''}>After Personality Numbers</option>
+                                    <option value="after-missing" ${section.position === 'after-missing' ? 'selected' : ''}>After Missing Numbers</option>
+                                    <option value="before-footer" ${section.position === 'before-footer' ? 'selected' : ''}>Before Footer</option>
+                                </select>
+                            </div>
                         </div>
                     `;
                     customSectionsContainer.insertAdjacentHTML('beforeend', sectionHtml);
@@ -763,13 +812,35 @@
                         renderCustomSections();
                     });
                 });
+                
+                // Add event listeners to position selectors
+                document.querySelectorAll('.change-position').forEach(select => {
+                    select.addEventListener('change', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        const newPosition = this.value;
+                        customSections[index].position = newPosition;
+                        saveCustomSections();
+                        renderCustomSections();
+                    });
+                });
             }
+        }
+        
+        function getPositionLabel(position) {
+            const labels = {
+                'after-core': 'After Core Numbers',
+                'after-personality': 'After Personality Numbers',
+                'after-missing': 'After Missing Numbers',
+                'before-footer': 'Before Footer'
+            };
+            return labels[position] || position;
         }
         
         // Add a new custom section
         function addCustomSection() {
             const title = document.getElementById('new-section-title').value.trim();
             const content = document.getElementById('new-section-content').value.trim();
+            const position = document.getElementById('section-position').value;
             
             if (!title || !content) {
                 addSectionSuccess.textContent = 'Please enter both title and content';
@@ -779,7 +850,8 @@
             
             customSections.push({
                 title: title,
-                content: content
+                content: content,
+                position: position
             });
             
             saveCustomSections();
@@ -864,7 +936,7 @@
                 fieldValues['personality'], 
                 fieldValues['kua-number'],
                 ...(fieldValues['lucky-numbers'] ? fieldValues['lucky-numbers'].split(',').map(num => num.trim()) : [])
-            ]);
+            ].filter(n => n && !isNaN(n)));
             
             // Convert missing numbers to array
             const missingNumbersArray = fieldValues['missing-numbers'] ? 
@@ -884,15 +956,21 @@
                         <div class="numbers-grid">
                             ${[1,2,3,4,5,6,7,8,9].map(num => {
                                 const isPresent = presentNumbers.has(num.toString());
-                                const isMissing = missingNumbersArray.includes(num.toString());
-                                return `
-                                    <div class="number-box ${isPresent ? 'present' : ''} ${isMissing ? 'missing' : ''}">
-                                        <div class="number-value">${num}</div>
-                                        <div class="number-label">
-                                            ${isPresent ? 'Present' : isMissing ? 'Missing' : ''}
+                                if (isPresent) {
+                                    return `
+                                        <div class="number-box present">
+                                            <div class="number-value">${num}</div>
+                                            <div class="number-label">Present</div>
                                         </div>
-                                    </div>
-                                `;
+                                    `;
+                                } else {
+                                    return `
+                                        <div class="number-box">
+                                            <div class="number-value">${num}</div>
+                                            <div class="number-label"></div>
+                                        </div>
+                                    `;
+                                }
                             }).join('')}
                         </div>
                     </div>
@@ -932,7 +1010,23 @@
             
             reportHTML += `
                     </div>
-                    
+            `;
+            
+            // Insert sections after Core Numbers if any
+            const afterCoreSections = customSections.filter(s => s.position === 'after-core');
+            if (afterCoreSections.length > 0) {
+                reportHTML += `
+                    <!-- Custom Sections After Core Numbers -->
+                    ${afterCoreSections.map(section => `
+                        <div class="chart-section">
+                            <h3 contenteditable="true" class="editable-title">${section.title}</h3>
+                            <div class="chart-value" contenteditable="true">${section.content}</div>
+                        </div>
+                    `).join('')}
+                `;
+            }
+            
+            reportHTML += `
                     <!-- Secondary Numbers Section -->
                     <div class="chart-section">
                         <h3 contenteditable="true" class="editable-title">Personality Numbers</h3>
@@ -976,6 +1070,20 @@
                     </div>
             `;
             
+            // Insert sections after Personality Numbers if any
+            const afterPersonalitySections = customSections.filter(s => s.position === 'after-personality');
+            if (afterPersonalitySections.length > 0) {
+                reportHTML += `
+                    <!-- Custom Sections After Personality Numbers -->
+                    ${afterPersonalitySections.map(section => `
+                        <div class="chart-section">
+                            <h3 contenteditable="true" class="editable-title">${section.title}</h3>
+                            <div class="chart-value" contenteditable="true">${section.content}</div>
+                        </div>
+                    `).join('')}
+                `;
+            }
+            
             // Add Missing Numbers if enabled
             if (document.getElementById('toggle-missing-numbers').checked && fieldValues['missing-numbers']) {
                 reportHTML += `
@@ -1009,6 +1117,20 @@
                 }
             }
             
+            // Insert sections after Missing Numbers if any
+            const afterMissingSections = customSections.filter(s => s.position === 'after-missing');
+            if (afterMissingSections.length > 0) {
+                reportHTML += `
+                    <!-- Custom Sections After Missing Numbers -->
+                    ${afterMissingSections.map(section => `
+                        <div class="chart-section">
+                            <h3 contenteditable="true" class="editable-title">${section.title}</h3>
+                            <div class="chart-value" contenteditable="true">${section.content}</div>
+                        </div>
+                    `).join('')}
+                `;
+            }
+            
             // Add Notes if enabled
             if (document.getElementById('toggle-notes').checked && fieldValues['notes']) {
                 reportHTML += `
@@ -1020,15 +1142,19 @@
                 `;
             }
             
-            // Add custom sections
-            customSections.forEach(section => {
+            // Insert sections before footer if any
+            const beforeFooterSections = customSections.filter(s => s.position === 'before-footer');
+            if (beforeFooterSections.length > 0) {
                 reportHTML += `
-                    <div class="chart-section">
-                        <h3 contenteditable="true" class="editable-title">${section.title}</h3>
-                        <div class="chart-value" contenteditable="true">${section.content}</div>
-                    </div>
+                    <!-- Custom Sections Before Footer -->
+                    ${beforeFooterSections.map(section => `
+                        <div class="chart-section">
+                            <h3 contenteditable="true" class="editable-title">${section.title}</h3>
+                            <div class="chart-value" contenteditable="true">${section.content}</div>
+                        </div>
+                    `).join('')}
                 `;
-            });
+            }
             
             reportHTML += `
                 </div>
@@ -1138,70 +1264,70 @@
             return directions[number] || "";
         }
         
-        // Download as PDF
-        downloadBtn.addEventListener('click', async () => {
-            // Create a clone of the chart box to avoid modifying the original
-            const element = chartBox.cloneNode(true);
+        // Open report in new tab
+        openReportBtn.addEventListener('click', () => {
+            // Create a new window
+            const reportWindow = window.open('', '_blank');
             
-            // Remove contenteditable attributes from the clone
-            element.querySelectorAll('[contenteditable]').forEach(el => {
-                el.removeAttribute('contenteditable');
-            });
+            // Get the report HTML
+            const reportHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Numerology Report</title>
+                    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+                    <style>
+                        body {
+                            font-family: 'Montserrat', sans-serif;
+                            padding: 20px;
+                            max-width: 1200px;
+                            margin: 0 auto;
+                        }
+                        h1, h2, h3 {
+                            font-family: 'Playfair Display', serif;
+                        }
+                        .numbers-grid {
+                            display: grid;
+                            grid-template-columns: repeat(3, 1fr);
+                            gap: 15px;
+                            margin: 20px 0;
+                        }
+                        .number-box {
+                            border: 1px solid #ddd;
+                            padding: 15px;
+                            text-align: center;
+                            border-radius: 5px;
+                        }
+                        .number-box.present {
+                            background-color: #f0f7f0;
+                            border-color: #c8e0c8;
+                        }
+                        .number-value {
+                            font-size: 24px;
+                            font-weight: bold;
+                            margin-bottom: 5px;
+                        }
+                        .number-box.present .number-value {
+                            color: #4caf50;
+                        }
+                        .chart-item {
+                            margin-bottom: 15px;
+                        }
+                        .chart-label {
+                            font-weight: bold;
+                        }
+                    </style>
+                </head>
+                <body>
+                    ${chartBox.innerHTML}
+                </body>
+                </html>
+            `;
             
-            // Add the clone to the document temporarily
-            element.style.position = 'absolute';
-            element.style.left = '-9999px';
-            element.style.width = '100%';
-            document.body.appendChild(element);
-            
-            // Get PDF options
-            const orientation = document.getElementById('pdf-orientation').value;
-            const format = document.getElementById('pdf-format').value;
-            
-            // PDF options
-            const opt = {
-                margin: 15,
-                filename: 'luxury-numerology-report.pdf',
-                image: { 
-                    type: 'jpeg', 
-                    quality: 0.98 
-                },
-                html2canvas: { 
-                    scale: 2,
-                    logging: false,
-                    useCORS: true,
-                    letterRendering: true,
-                    scrollX: 0,
-                    scrollY: 0,
-                    windowWidth: element.scrollWidth,
-                    windowHeight: element.scrollHeight
-                },
-                jsPDF: { 
-                    unit: 'mm', 
-                    format: format,
-                    orientation: orientation,
-                    hotfixes: ["px_scaling"]
-                }
-            };
-            
-            try {
-                // Show loading state
-                downloadBtn.textContent = 'Generating PDF...';
-                downloadBtn.disabled = true;
-                
-                // Generate PDF
-                await html2pdf().set(opt).from(element).save();
-            } catch (error) {
-                console.error('Error generating PDF:', error);
-                alert('Error generating PDF. Please try again.');
-            } finally {
-                // Remove the temporary element
-                document.body.removeChild(element);
-                
-                // Reset button state
-                downloadBtn.textContent = 'Download as PDF';
-                downloadBtn.disabled = false;
-            }
+            // Write the HTML to the new window
+            reportWindow.document.open();
+            reportWindow.document.write(reportHTML);
+            reportWindow.document.close();
         });
         
         // New chart button
