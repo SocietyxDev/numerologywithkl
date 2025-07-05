@@ -37,7 +37,7 @@
             padding: 30px;
         }
         
-        .login-container, .form-container, .chart-container {
+        .login-container, .form-container, .chart-container, .admin-container {
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
@@ -334,6 +334,35 @@
             color: var(--dark-color);
         }
         
+        .admin-controls {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        .field-toggle {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .field-toggle label {
+            margin-bottom: 0;
+            margin-left: 10px;
+            flex: 1;
+        }
+        
+        .pdf-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .pdf-options select {
+            flex: 1;
+        }
+        
         @media (max-width: 900px) {
             .chart-grid {
                 grid-template-columns: 1fr;
@@ -349,7 +378,7 @@
                 padding: 20px;
             }
             
-            .login-container, .form-container, .chart-container {
+            .login-container, .form-container, .chart-container, .admin-container {
                 padding: 30px;
             }
             
@@ -378,6 +407,10 @@
             .numbers-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
+            
+            .pdf-options {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -400,6 +433,59 @@
         
         <!-- Main App (hidden initially) -->
         <div id="app-section" class="hidden">
+            <!-- Admin Controls -->
+            <div class="admin-container hidden" id="admin-panel">
+                <h2>Admin Controls</h2>
+                <div class="admin-controls">
+                    <h3>Toggle Report Fields</h3>
+                    <div class="field-toggle">
+                        <input type="checkbox" id="toggle-life-path" checked>
+                        <label for="toggle-life-path">Life Path Number</label>
+                    </div>
+                    <div class="field-toggle">
+                        <input type="checkbox" id="toggle-destiny" checked>
+                        <label for="toggle-destiny">Destiny Number</label>
+                    </div>
+                    <div class="field-toggle">
+                        <input type="checkbox" id="toggle-soul-urge" checked>
+                        <label for="toggle-soul-urge">Soul Urge Number</label>
+                    </div>
+                    <div class="field-toggle">
+                        <input type="checkbox" id="toggle-personality" checked>
+                        <label for="toggle-personality">Personality Number</label>
+                    </div>
+                    <div class="field-toggle">
+                        <input type="checkbox" id="toggle-kua" checked>
+                        <label for="toggle-kua">Kua Number</label>
+                    </div>
+                    <div class="field-toggle">
+                        <input type="checkbox" id="toggle-missing" checked>
+                        <label for="toggle-missing">Missing Numbers Analysis</label>
+                    </div>
+                    <div class="field-toggle">
+                        <input type="checkbox" id="toggle-remedies" checked>
+                        <label for="toggle-remedies">Remedies & Solutions</label>
+                    </div>
+                    <div class="field-toggle">
+                        <input type="checkbox" id="toggle-notes" checked>
+                        <label for="toggle-notes">Additional Notes</label>
+                    </div>
+                    
+                    <h3 style="margin-top: 30px;">PDF Options</h3>
+                    <div class="pdf-options">
+                        <select id="pdf-orientation">
+                            <option value="portrait">Portrait</option>
+                            <option value="landscape">Landscape</option>
+                        </select>
+                        <select id="pdf-format">
+                            <option value="a4">A4</option>
+                            <option value="letter">Letter</option>
+                            <option value="a5">A5</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Input Form -->
             <div class="form-container">
                 <h2>Numerology Report Generator</h2>
@@ -413,19 +499,19 @@
                         <label for="dob">Date of Birth</label>
                         <input type="date" id="dob" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="life-path-group">
                         <label for="life-path">Life Path Number</label>
                         <input type="number" id="life-path" min="1" max="9" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="destiny-group">
                         <label for="destiny">Destiny Number</label>
                         <input type="number" id="destiny" min="1" max="9" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="soul-urge-group">
                         <label for="soul-urge">Soul Urge Number</label>
                         <input type="number" id="soul-urge" min="1" max="9" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="personality-group">
                         <label for="personality">Personality Number</label>
                         <input type="number" id="personality" min="1" max="9" required>
                     </div>
@@ -433,23 +519,23 @@
                         <label for="lucky-numbers">Lucky Numbers</label>
                         <input type="text" id="lucky-numbers" placeholder="e.g. 3, 7, 12">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="kua-group">
                         <label for="kua-number">Kua Number</label>
                         <input type="number" id="kua-number" min="1" max="9">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="missing-group">
                         <label for="missing-numbers">Missing Numbers</label>
                         <input type="text" id="missing-numbers" placeholder="e.g. 2, 5, 8">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="challenges-group">
                         <label for="challenges">Challenges Due to Missing Numbers</label>
                         <textarea id="challenges" placeholder="Describe any challenges..."></textarea>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="remedies-group">
                         <label for="remedies">Remedies & Solutions</label>
                         <textarea id="remedies" placeholder="Suggest remedies..."></textarea>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="notes-group">
                         <label for="notes">Additional Notes</label>
                         <textarea id="notes" placeholder="Any other insights..."></textarea>
                     </div>
@@ -470,6 +556,7 @@
                     <button id="download-btn">Download as PDF</button>
                     <button id="new-chart-btn" class="secondary-btn">Create New Report</button>
                     <button id="edit-report-btn" class="secondary-btn">Edit Report</button>
+                    <button id="admin-toggle-btn" class="secondary-btn">Admin Panel</button>
                 </div>
             </div>
         </div>
@@ -489,10 +576,13 @@
         const downloadBtn = document.getElementById('download-btn');
         const newChartBtn = document.getElementById('new-chart-btn');
         const editReportBtn = document.getElementById('edit-report-btn');
+        const adminPanel = document.getElementById('admin-panel');
+        const adminToggleBtn = document.getElementById('admin-toggle-btn');
         
         // Hardcoded credentials
-        const CORRECT_USERNAME = 'numerologist';
-        const CORRECT_PASSWORD = '12345';
+        const CORRECT_USERNAME = 'gaurav';
+        const CORRECT_PASSWORD = 'gaurav123';
+        let isAdmin = false;
         
         // Login functionality
         loginBtn.addEventListener('click', (e) => {
@@ -504,6 +594,8 @@
                 loginSection.classList.add('hidden');
                 appSection.classList.remove('hidden');
                 loginError.classList.add('hidden');
+                isAdmin = true;
+                adminPanel.classList.remove('hidden');
             } else {
                 loginError.classList.remove('hidden');
             }
@@ -513,6 +605,11 @@
         numerologyForm.addEventListener('submit', (e) => {
             e.preventDefault();
             generateReport();
+        });
+        
+        // Toggle admin panel
+        adminToggleBtn.addEventListener('click', () => {
+            adminPanel.classList.toggle('hidden');
         });
         
         // Generate the report
@@ -554,7 +651,7 @@
                 missingNumbers.split(',').map(num => num.trim()) : [];
             
             // Generate report HTML
-            chartBox.innerHTML = `
+            let reportHTML = `
                 <h2 contenteditable="true" class="editable-title">${reportTitle}</h2>
                 <div class="intro-text">
                     <p>This personalized numerology report for <strong>${fullName}</strong> reveals key insights about your life path, challenges, and opportunities based on your numbers.</p>
@@ -591,38 +688,77 @@
                             <div class="chart-label" contenteditable="true">Date of Birth</div>
                             <div class="chart-value">${formattedDate}</div>
                         </div>
+            `;
+            
+            // Add Life Path if enabled
+            if (document.getElementById('toggle-life-path').checked) {
+                reportHTML += `
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Life Path</div>
                             <div class="chart-value"><strong>${lifePath}</strong> - ${getLifePathMeaning(lifePath)}</div>
                         </div>
+                `;
+            }
+            
+            // Add Destiny if enabled
+            if (document.getElementById('toggle-destiny').checked) {
+                reportHTML += `
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Destiny</div>
                             <div class="chart-value"><strong>${destiny}</strong> - ${getDestinyMeaning(destiny)}</div>
                         </div>
+                `;
+            }
+            
+            reportHTML += `
                     </div>
                     
                     <!-- Secondary Numbers Section -->
                     <div class="chart-section">
                         <h3 contenteditable="true" class="editable-title">Personality Numbers</h3>
+            `;
+            
+            // Add Soul Urge if enabled
+            if (document.getElementById('toggle-soul-urge').checked) {
+                reportHTML += `
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Soul Urge</div>
                             <div class="chart-value"><strong>${soulUrge}</strong> - ${getSoulUrgeMeaning(soulUrge)}</div>
                         </div>
+                `;
+            }
+            
+            // Add Personality if enabled
+            if (document.getElementById('toggle-personality').checked) {
+                reportHTML += `
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Personality</div>
                             <div class="chart-value"><strong>${personality}</strong> - ${getPersonalityMeaning(personality)}</div>
                         </div>
+                `;
+            }
+            
+            // Add Kua if enabled
+            if (document.getElementById('toggle-kua').checked) {
+                reportHTML += `
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Kua Number</div>
                             <div class="chart-value"><strong>${kuaNumber || '-'}</strong> ${kuaNumber ? getKuaDirection(kuaNumber) : ''}</div>
                         </div>
+                `;
+            }
+            
+            reportHTML += `
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Lucky Numbers</div>
                             <div class="chart-value"><strong>${luckyNumbers || '-'}</strong></div>
                         </div>
                     </div>
-                    
-                    ${missingNumbers ? `
+            `;
+            
+            // Add Missing Numbers if enabled
+            if (document.getElementById('toggle-missing').checked && missingNumbers) {
+                reportHTML += `
                     <!-- Missing Numbers Section -->
                     <div class="chart-section highlight">
                         <h3 contenteditable="true" class="editable-title">Missing Numbers Analysis</h3>
@@ -637,7 +773,11 @@
                         </div>
                         ` : ''}
                     </div>
-                    
+                `;
+                
+                // Add Remedies if enabled
+                if (document.getElementById('toggle-remedies').checked) {
+                    reportHTML += `
                     <!-- Remedies Section -->
                     <div class="chart-section highlight">
                         <h3 contenteditable="true" class="editable-title">Remedies & Solutions</h3>
@@ -645,15 +785,22 @@
                         <div class="chart-value" contenteditable="true">${remedies}</div>
                         ` : '<div class="chart-value" contenteditable="true">No specific remedies provided</div>'}
                     </div>
-                    ` : ''}
-                    
-                    ${notes ? `
+                    `;
+                }
+            }
+            
+            // Add Notes if enabled
+            if (document.getElementById('toggle-notes').checked && notes) {
+                reportHTML += `
                     <!-- Additional Notes Section -->
                     <div class="chart-section full-width">
                         <h3 contenteditable="true" class="editable-title">Additional Insights</h3>
                         <div class="chart-value" contenteditable="true">${notes}</div>
                     </div>
-                    ` : ''}
+                `;
+            }
+            
+            reportHTML += `
                 </div>
                 
                 <div class="footer-note">
@@ -667,6 +814,8 @@
                     <p>This report is for personal guidance only. Use this information as a tool for self-discovery and positive growth.</p>
                 </div>
             `;
+            
+            chartBox.innerHTML = reportHTML;
             
             // Show the chart section
             chartSection.classList.remove('hidden');
@@ -760,7 +909,7 @@
         }
         
         // Download as PDF - FIXED VERSION
-        downloadBtn.addEventListener('click', () => {
+        downloadBtn.addEventListener('click', async () => {
             // Create a clone of the chart box to avoid modifying the original
             const element = chartBox.cloneNode(true);
             
@@ -772,33 +921,49 @@
             // Add the clone to the document temporarily
             element.style.position = 'absolute';
             element.style.left = '-9999px';
+            element.style.width = '100%';
             document.body.appendChild(element);
+            
+            // Get PDF options
+            const orientation = document.getElementById('pdf-orientation').value;
+            const format = document.getElementById('pdf-format').value;
             
             // PDF options
             const opt = {
                 margin: 15,
                 filename: 'luxury-numerology-report.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
+                image: { 
+                    type: 'jpeg', 
+                    quality: 0.98 
+                },
                 html2canvas: { 
                     scale: 2,
                     logging: false,
                     useCORS: true,
-                    allowTaint: true,
-                    letterRendering: true
+                    letterRendering: true,
+                    scrollX: 0,
+                    scrollY: 0,
+                    windowWidth: element.scrollWidth,
+                    windowHeight: element.scrollHeight
                 },
                 jsPDF: { 
                     unit: 'mm', 
-                    format: 'a4', 
-                    orientation: 'portrait',
+                    format: format,
+                    orientation: orientation,
                     hotfixes: ["px_scaling"]
                 }
             };
             
-            // Generate PDF
-            html2pdf().set(opt).from(element).save().then(() => {
+            try {
+                // Generate PDF
+                await html2pdf().set(opt).from(element).save();
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Error generating PDF. Please try again.');
+            } finally {
                 // Remove the temporary element
                 document.body.removeChild(element);
-            });
+            }
         });
         
         // New chart button
@@ -811,6 +976,17 @@
         // Edit report button
         editReportBtn.addEventListener('click', () => {
             generateReport();
+        });
+        
+        // Toggle form fields based on admin settings
+        document.querySelectorAll('.field-toggle input').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const fieldId = this.id.replace('toggle-', '');
+                const formGroup = document.getElementById(`${fieldId}-group`);
+                if (formGroup) {
+                    formGroup.style.display = this.checked ? 'block' : 'none';
+                }
+            });
         });
     </script>
 </body>
