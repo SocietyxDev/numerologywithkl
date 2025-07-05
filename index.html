@@ -16,6 +16,7 @@
             --highlight-color: #f0e6d2;
             --gold-color: #c5a267;
             --grid-gap: 25px;
+            --success-color: #4caf50;
         }
         
         * {
@@ -78,6 +79,14 @@
             letter-spacing: 0.3px;
         }
         
+        h4 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-color);
+            margin: 20px 0 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
         .form-group {
             margin-bottom: 25px;
         }
@@ -137,6 +146,14 @@
         
         .error-message {
             color: #d33;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .success-message {
+            color: var(--success-color);
             margin-top: 15px;
             text-align: center;
             font-weight: 600;
@@ -266,6 +283,14 @@
             background-color: #9a826b;
         }
         
+        .success-btn {
+            background-color: var(--success-color);
+        }
+        
+        .success-btn:hover {
+            background-color: #3d8b40;
+        }
+        
         .hidden {
             display: none;
         }
@@ -341,16 +366,37 @@
             border-radius: 8px;
         }
         
+        .field-toggle-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
         .field-toggle {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            padding: 12px 15px;
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+        
+        .field-toggle:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .field-toggle input {
+            width: auto;
+            margin-right: 10px;
         }
         
         .field-toggle label {
             margin-bottom: 0;
-            margin-left: 10px;
             flex: 1;
+            cursor: pointer;
         }
         
         .pdf-options {
@@ -363,6 +409,35 @@
             flex: 1;
         }
         
+        .add-section {
+            margin-top: 20px;
+        }
+        
+        .custom-section {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .custom-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .remove-section {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
         @media (max-width: 900px) {
             .chart-grid {
                 grid-template-columns: 1fr;
@@ -370,6 +445,10 @@
             
             .numbers-grid {
                 grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .field-toggle-container {
+                grid-template-columns: 1fr;
             }
         }
         
@@ -412,6 +491,53 @@
                 flex-direction: column;
             }
         }
+        
+        /* Custom toggle switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--success-color);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
     </style>
 </head>
 <body>
@@ -438,37 +564,8 @@
                 <h2>Admin Controls</h2>
                 <div class="admin-controls">
                     <h3>Toggle Report Fields</h3>
-                    <div class="field-toggle">
-                        <input type="checkbox" id="toggle-life-path" checked>
-                        <label for="toggle-life-path">Life Path Number</label>
-                    </div>
-                    <div class="field-toggle">
-                        <input type="checkbox" id="toggle-destiny" checked>
-                        <label for="toggle-destiny">Destiny Number</label>
-                    </div>
-                    <div class="field-toggle">
-                        <input type="checkbox" id="toggle-soul-urge" checked>
-                        <label for="toggle-soul-urge">Soul Urge Number</label>
-                    </div>
-                    <div class="field-toggle">
-                        <input type="checkbox" id="toggle-personality" checked>
-                        <label for="toggle-personality">Personality Number</label>
-                    </div>
-                    <div class="field-toggle">
-                        <input type="checkbox" id="toggle-kua" checked>
-                        <label for="toggle-kua">Kua Number</label>
-                    </div>
-                    <div class="field-toggle">
-                        <input type="checkbox" id="toggle-missing" checked>
-                        <label for="toggle-missing">Missing Numbers Analysis</label>
-                    </div>
-                    <div class="field-toggle">
-                        <input type="checkbox" id="toggle-remedies" checked>
-                        <label for="toggle-remedies">Remedies & Solutions</label>
-                    </div>
-                    <div class="field-toggle">
-                        <input type="checkbox" id="toggle-notes" checked>
-                        <label for="toggle-notes">Additional Notes</label>
+                    <div class="field-toggle-container" id="standard-fields">
+                        <!-- Standard fields will be added here by JavaScript -->
                     </div>
                     
                     <h3 style="margin-top: 30px;">PDF Options</h3>
@@ -482,6 +579,24 @@
                             <option value="letter">Letter</option>
                             <option value="a5">A5</option>
                         </select>
+                    </div>
+                    
+                    <div class="add-section">
+                        <h3>Add Custom Section</h3>
+                        <div class="form-group">
+                            <label for="new-section-title">Section Title</label>
+                            <input type="text" id="new-section-title" placeholder="Enter section title">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-section-content">Content</label>
+                            <textarea id="new-section-content" placeholder="Enter section content"></textarea>
+                        </div>
+                        <button id="add-section-btn" class="success-btn">Add Custom Section</button>
+                        <div id="add-section-success" class="success-message hidden"></div>
+                    </div>
+                    
+                    <div id="custom-sections-container">
+                        <!-- Custom sections will be added here -->
                     </div>
                 </div>
             </div>
@@ -499,46 +614,10 @@
                         <label for="dob">Date of Birth</label>
                         <input type="date" id="dob" required>
                     </div>
-                    <div class="form-group" id="life-path-group">
-                        <label for="life-path">Life Path Number</label>
-                        <input type="number" id="life-path" min="1" max="9" required>
-                    </div>
-                    <div class="form-group" id="destiny-group">
-                        <label for="destiny">Destiny Number</label>
-                        <input type="number" id="destiny" min="1" max="9" required>
-                    </div>
-                    <div class="form-group" id="soul-urge-group">
-                        <label for="soul-urge">Soul Urge Number</label>
-                        <input type="number" id="soul-urge" min="1" max="9" required>
-                    </div>
-                    <div class="form-group" id="personality-group">
-                        <label for="personality">Personality Number</label>
-                        <input type="number" id="personality" min="1" max="9" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="lucky-numbers">Lucky Numbers</label>
-                        <input type="text" id="lucky-numbers" placeholder="e.g. 3, 7, 12">
-                    </div>
-                    <div class="form-group" id="kua-group">
-                        <label for="kua-number">Kua Number</label>
-                        <input type="number" id="kua-number" min="1" max="9">
-                    </div>
-                    <div class="form-group" id="missing-group">
-                        <label for="missing-numbers">Missing Numbers</label>
-                        <input type="text" id="missing-numbers" placeholder="e.g. 2, 5, 8">
-                    </div>
-                    <div class="form-group" id="challenges-group">
-                        <label for="challenges">Challenges Due to Missing Numbers</label>
-                        <textarea id="challenges" placeholder="Describe any challenges..."></textarea>
-                    </div>
-                    <div class="form-group" id="remedies-group">
-                        <label for="remedies">Remedies & Solutions</label>
-                        <textarea id="remedies" placeholder="Suggest remedies..."></textarea>
-                    </div>
-                    <div class="form-group" id="notes-group">
-                        <label for="notes">Additional Notes</label>
-                        <textarea id="notes" placeholder="Any other insights..."></textarea>
-                    </div>
+                    
+                    <!-- Standard fields will be added here by JavaScript -->
+                    <div id="form-fields-container"></div>
+                    
                     <div class="form-group">
                         <label for="report-title">Report Title</label>
                         <input type="text" id="report-title" value="Personal Numerology Report">
@@ -578,11 +657,147 @@
         const editReportBtn = document.getElementById('edit-report-btn');
         const adminPanel = document.getElementById('admin-panel');
         const adminToggleBtn = document.getElementById('admin-toggle-btn');
+        const standardFieldsContainer = document.getElementById('standard-fields');
+        const formFieldsContainer = document.getElementById('form-fields-container');
+        const customSectionsContainer = document.getElementById('custom-sections-container');
+        const addSectionBtn = document.getElementById('add-section-btn');
+        const addSectionSuccess = document.getElementById('add-section-success');
         
         // Hardcoded credentials
         const CORRECT_USERNAME = 'gaurav';
         const CORRECT_PASSWORD = 'gaurav123';
         let isAdmin = false;
+        
+        // Standard fields configuration
+        const standardFields = [
+            { id: 'life-path', label: 'Life Path Number', type: 'number', required: true },
+            { id: 'destiny', label: 'Destiny Number', type: 'number', required: true },
+            { id: 'soul-urge', label: 'Soul Urge Number', type: 'number', required: true },
+            { id: 'personality', label: 'Personality Number', type: 'number', required: true },
+            { id: 'lucky-numbers', label: 'Lucky Numbers', type: 'text', required: false },
+            { id: 'kua-number', label: 'Kua Number', type: 'number', required: false },
+            { id: 'missing-numbers', label: 'Missing Numbers', type: 'text', required: false },
+            { id: 'challenges', label: 'Challenges Due to Missing Numbers', type: 'textarea', required: false },
+            { id: 'remedies', label: 'Remedies & Solutions', type: 'textarea', required: false },
+            { id: 'notes', label: 'Additional Notes', type: 'textarea', required: false }
+        ];
+        
+        // Custom sections
+        let customSections = [];
+        
+        // Initialize the application
+        function initApp() {
+            // Create standard field toggles
+            standardFields.forEach(field => {
+                // Add to toggle container
+                const toggleHtml = `
+                    <div class="field-toggle">
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-${field.id}" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <label for="toggle-${field.id}">${field.label}</label>
+                    </div>
+                `;
+                standardFieldsContainer.insertAdjacentHTML('beforeend', toggleHtml);
+                
+                // Add to form container
+                const formGroupHtml = `
+                    <div class="form-group" id="${field.id}-group">
+                        <label for="${field.id}">${field.label}</label>
+                        ${field.type === 'textarea' ? 
+                            `<textarea id="${field.id}" ${field.required ? 'required' : ''}></textarea>` :
+                            `<input type="${field.type}" id="${field.id}" ${field.required ? 'required' : ''} ${field.type === 'number' ? 'min="1" max="9"' : ''}>`
+                        }
+                    </div>
+                `;
+                formFieldsContainer.insertAdjacentHTML('beforeend', formGroupHtml);
+            });
+            
+            // Load any saved custom sections
+            loadCustomSections();
+        }
+        
+        // Load custom sections from localStorage
+        function loadCustomSections() {
+            const savedSections = localStorage.getItem('numerologyCustomSections');
+            if (savedSections) {
+                customSections = JSON.parse(savedSections);
+                renderCustomSections();
+            }
+        }
+        
+        // Save custom sections to localStorage
+        function saveCustomSections() {
+            localStorage.setItem('numerologyCustomSections', JSON.stringify(customSections));
+        }
+        
+        // Render custom sections in admin panel
+        function renderCustomSections() {
+            customSectionsContainer.innerHTML = '';
+            
+            if (customSections.length > 0) {
+                const heading = document.createElement('h3');
+                heading.textContent = 'Custom Sections';
+                customSectionsContainer.appendChild(heading);
+                
+                customSections.forEach((section, index) => {
+                    const sectionHtml = `
+                        <div class="custom-section" data-index="${index}">
+                            <div class="custom-section-header">
+                                <h4>${section.title}</h4>
+                                <button class="remove-section" data-index="${index}">Remove</button>
+                            </div>
+                            <p>${section.content}</p>
+                        </div>
+                    `;
+                    customSectionsContainer.insertAdjacentHTML('beforeend', sectionHtml);
+                });
+                
+                // Add event listeners to remove buttons
+                document.querySelectorAll('.remove-section').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        customSections.splice(index, 1);
+                        saveCustomSections();
+                        renderCustomSections();
+                    });
+                });
+            }
+        }
+        
+        // Add a new custom section
+        function addCustomSection() {
+            const title = document.getElementById('new-section-title').value.trim();
+            const content = document.getElementById('new-section-content').value.trim();
+            
+            if (!title || !content) {
+                addSectionSuccess.textContent = 'Please enter both title and content';
+                addSectionSuccess.classList.remove('hidden');
+                return;
+            }
+            
+            customSections.push({
+                title: title,
+                content: content
+            });
+            
+            saveCustomSections();
+            renderCustomSections();
+            
+            // Clear inputs
+            document.getElementById('new-section-title').value = '';
+            document.getElementById('new-section-content').value = '';
+            
+            // Show success message
+            addSectionSuccess.textContent = 'Custom section added successfully!';
+            addSectionSuccess.classList.remove('hidden');
+            
+            // Hide message after 3 seconds
+            setTimeout(() => {
+                addSectionSuccess.classList.add('hidden');
+            }, 3000);
+        }
         
         // Login functionality
         loginBtn.addEventListener('click', (e) => {
@@ -596,6 +811,7 @@
                 loginError.classList.add('hidden');
                 isAdmin = true;
                 adminPanel.classList.remove('hidden');
+                initApp();
             } else {
                 loginError.classList.remove('hidden');
             }
@@ -612,21 +828,17 @@
             adminPanel.classList.toggle('hidden');
         });
         
+        // Add custom section button
+        addSectionBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            addCustomSection();
+        });
+        
         // Generate the report
         function generateReport() {
             // Get form values
             const fullName = document.getElementById('full-name').value;
             const dob = document.getElementById('dob').value;
-            const lifePath = document.getElementById('life-path').value;
-            const destiny = document.getElementById('destiny').value;
-            const soulUrge = document.getElementById('soul-urge').value;
-            const personality = document.getElementById('personality').value;
-            const luckyNumbers = document.getElementById('lucky-numbers').value;
-            const kuaNumber = document.getElementById('kua-number').value;
-            const missingNumbers = document.getElementById('missing-numbers').value;
-            const challenges = document.getElementById('challenges').value;
-            const remedies = document.getElementById('remedies').value;
-            const notes = document.getElementById('notes').value;
             const reportTitle = document.getElementById('report-title').value || 'Personal Numerology Report';
             
             // Format date for display
@@ -636,19 +848,27 @@
                 day: 'numeric'
             }) : '';
             
+            // Collect all field values
+            const fieldValues = {};
+            standardFields.forEach(field => {
+                if (document.getElementById(`toggle-${field.id}`).checked) {
+                    fieldValues[field.id] = document.getElementById(field.id).value;
+                }
+            });
+            
             // Determine present numbers
             const presentNumbers = new Set([
-                lifePath, 
-                destiny, 
-                soulUrge, 
-                personality, 
-                kuaNumber,
-                ...(luckyNumbers ? luckyNumbers.split(',').map(num => num.trim()) : [])
+                fieldValues['life-path'], 
+                fieldValues['destiny'], 
+                fieldValues['soul-urge'], 
+                fieldValues['personality'], 
+                fieldValues['kua-number'],
+                ...(fieldValues['lucky-numbers'] ? fieldValues['lucky-numbers'].split(',').map(num => num.trim()) : [])
             ]);
             
             // Convert missing numbers to array
-            const missingNumbersArray = missingNumbers ? 
-                missingNumbers.split(',').map(num => num.trim()) : [];
+            const missingNumbersArray = fieldValues['missing-numbers'] ? 
+                fieldValues['missing-numbers'].split(',').map(num => num.trim()) : [];
             
             // Generate report HTML
             let reportHTML = `
@@ -691,21 +911,21 @@
             `;
             
             // Add Life Path if enabled
-            if (document.getElementById('toggle-life-path').checked) {
+            if (document.getElementById('toggle-life-path').checked && fieldValues['life-path']) {
                 reportHTML += `
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Life Path</div>
-                            <div class="chart-value"><strong>${lifePath}</strong> - ${getLifePathMeaning(lifePath)}</div>
+                            <div class="chart-value"><strong>${fieldValues['life-path']}</strong> - ${getLifePathMeaning(fieldValues['life-path'])}</div>
                         </div>
                 `;
             }
             
             // Add Destiny if enabled
-            if (document.getElementById('toggle-destiny').checked) {
+            if (document.getElementById('toggle-destiny').checked && fieldValues['destiny']) {
                 reportHTML += `
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Destiny</div>
-                            <div class="chart-value"><strong>${destiny}</strong> - ${getDestinyMeaning(destiny)}</div>
+                            <div class="chart-value"><strong>${fieldValues['destiny']}</strong> - ${getDestinyMeaning(fieldValues['destiny'])}</div>
                         </div>
                 `;
             }
@@ -719,31 +939,31 @@
             `;
             
             // Add Soul Urge if enabled
-            if (document.getElementById('toggle-soul-urge').checked) {
+            if (document.getElementById('toggle-soul-urge').checked && fieldValues['soul-urge']) {
                 reportHTML += `
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Soul Urge</div>
-                            <div class="chart-value"><strong>${soulUrge}</strong> - ${getSoulUrgeMeaning(soulUrge)}</div>
+                            <div class="chart-value"><strong>${fieldValues['soul-urge']}</strong> - ${getSoulUrgeMeaning(fieldValues['soul-urge'])}</div>
                         </div>
                 `;
             }
             
             // Add Personality if enabled
-            if (document.getElementById('toggle-personality').checked) {
+            if (document.getElementById('toggle-personality').checked && fieldValues['personality']) {
                 reportHTML += `
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Personality</div>
-                            <div class="chart-value"><strong>${personality}</strong> - ${getPersonalityMeaning(personality)}</div>
+                            <div class="chart-value"><strong>${fieldValues['personality']}</strong> - ${getPersonalityMeaning(fieldValues['personality'])}</div>
                         </div>
                 `;
             }
             
             // Add Kua if enabled
-            if (document.getElementById('toggle-kua').checked) {
+            if (document.getElementById('toggle-kua-number').checked && fieldValues['kua-number']) {
                 reportHTML += `
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Kua Number</div>
-                            <div class="chart-value"><strong>${kuaNumber || '-'}</strong> ${kuaNumber ? getKuaDirection(kuaNumber) : ''}</div>
+                            <div class="chart-value"><strong>${fieldValues['kua-number'] || '-'}</strong> ${fieldValues['kua-number'] ? getKuaDirection(fieldValues['kua-number']) : ''}</div>
                         </div>
                 `;
             }
@@ -751,25 +971,25 @@
             reportHTML += `
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Lucky Numbers</div>
-                            <div class="chart-value"><strong>${luckyNumbers || '-'}</strong></div>
+                            <div class="chart-value"><strong>${fieldValues['lucky-numbers'] || '-'}</strong></div>
                         </div>
                     </div>
             `;
             
             // Add Missing Numbers if enabled
-            if (document.getElementById('toggle-missing').checked && missingNumbers) {
+            if (document.getElementById('toggle-missing-numbers').checked && fieldValues['missing-numbers']) {
                 reportHTML += `
                     <!-- Missing Numbers Section -->
                     <div class="chart-section highlight">
                         <h3 contenteditable="true" class="editable-title">Missing Numbers Analysis</h3>
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Missing Numbers</div>
-                            <div class="chart-value"><strong>${missingNumbers}</strong></div>
+                            <div class="chart-value"><strong>${fieldValues['missing-numbers']}</strong></div>
                         </div>
-                        ${challenges ? `
+                        ${fieldValues['challenges'] ? `
                         <div class="chart-item">
                             <div class="chart-label" contenteditable="true">Potential Challenges</div>
-                            <div class="chart-value">${challenges}</div>
+                            <div class="chart-value">${fieldValues['challenges']}</div>
                         </div>
                         ` : ''}
                     </div>
@@ -781,8 +1001,8 @@
                     <!-- Remedies Section -->
                     <div class="chart-section highlight">
                         <h3 contenteditable="true" class="editable-title">Remedies & Solutions</h3>
-                        ${remedies ? `
-                        <div class="chart-value" contenteditable="true">${remedies}</div>
+                        ${fieldValues['remedies'] ? `
+                        <div class="chart-value" contenteditable="true">${fieldValues['remedies']}</div>
                         ` : '<div class="chart-value" contenteditable="true">No specific remedies provided</div>'}
                     </div>
                     `;
@@ -790,15 +1010,25 @@
             }
             
             // Add Notes if enabled
-            if (document.getElementById('toggle-notes').checked && notes) {
+            if (document.getElementById('toggle-notes').checked && fieldValues['notes']) {
                 reportHTML += `
                     <!-- Additional Notes Section -->
                     <div class="chart-section full-width">
                         <h3 contenteditable="true" class="editable-title">Additional Insights</h3>
-                        <div class="chart-value" contenteditable="true">${notes}</div>
+                        <div class="chart-value" contenteditable="true">${fieldValues['notes']}</div>
                     </div>
                 `;
             }
+            
+            // Add custom sections
+            customSections.forEach(section => {
+                reportHTML += `
+                    <div class="chart-section">
+                        <h3 contenteditable="true" class="editable-title">${section.title}</h3>
+                        <div class="chart-value" contenteditable="true">${section.content}</div>
+                    </div>
+                `;
+            });
             
             reportHTML += `
                 </div>
@@ -908,7 +1138,7 @@
             return directions[number] || "";
         }
         
-        // Download as PDF - FIXED VERSION
+        // Download as PDF
         downloadBtn.addEventListener('click', async () => {
             // Create a clone of the chart box to avoid modifying the original
             const element = chartBox.cloneNode(true);
@@ -955,6 +1185,10 @@
             };
             
             try {
+                // Show loading state
+                downloadBtn.textContent = 'Generating PDF...';
+                downloadBtn.disabled = true;
+                
                 // Generate PDF
                 await html2pdf().set(opt).from(element).save();
             } catch (error) {
@@ -963,6 +1197,10 @@
             } finally {
                 // Remove the temporary element
                 document.body.removeChild(element);
+                
+                // Reset button state
+                downloadBtn.textContent = 'Download as PDF';
+                downloadBtn.disabled = false;
             }
         });
         
@@ -979,14 +1217,14 @@
         });
         
         // Toggle form fields based on admin settings
-        document.querySelectorAll('.field-toggle input').forEach(toggle => {
-            toggle.addEventListener('change', function() {
-                const fieldId = this.id.replace('toggle-', '');
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.id && e.target.id.startsWith('toggle-')) {
+                const fieldId = e.target.id.replace('toggle-', '');
                 const formGroup = document.getElementById(`${fieldId}-group`);
                 if (formGroup) {
-                    formGroup.style.display = this.checked ? 'block' : 'none';
+                    formGroup.style.display = e.target.checked ? 'block' : 'none';
                 }
-            });
+            }
         });
     </script>
 </body>
