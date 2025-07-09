@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Luxury Numerology Report</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root {
             --primary-color: #5d4e6d;
@@ -212,7 +213,7 @@
             text-align: center;
             min-height: 90px;
             transition: all 0.3s;
-            border: 1px solid #e8e2d9;
+            border: 2px solid #e8e2d9;
         }
         
         .number-value {
@@ -233,7 +234,7 @@
         
         .number-box.present {
             background-color: #f0f7f0;
-            border: 1px solid #c8e0c8;
+            border: 2px solid #c8e0c8;
         }
         
         .number-box.present .number-value {
@@ -242,7 +243,7 @@
         
         .number-box.missing {
             background-color: #fdf0f0;
-            border: 1px solid #f0c8c8;
+            border: 2px solid #f0c8c8;
         }
         
         .number-box.missing .number-value {
@@ -625,6 +626,9 @@
                                 <option value="after-personality">After Personality Numbers</option>
                                 <option value="after-missing">After Missing Numbers</option>
                                 <option value="before-footer">Before Footer</option>
+                                <option value="before-core">Before Core Numbers</option>
+                                <option value="between-core-personality">Between Core and Personality</option>
+                                <option value="between-personality-missing">Between Personality and Missing</option>
                             </select>
                         </div>
                         <button id="add-section-btn" class="success-btn">Add Custom Section</button>
@@ -669,6 +673,7 @@
                 </div>
                 <div class="actions">
                     <button id="open-report-btn">Open Report in New Tab</button>
+                    <button id="save-image-btn" class="secondary-btn">Save as Image</button>
                     <button id="new-chart-btn" class="secondary-btn">Create New Report</button>
                     <button id="edit-report-btn" class="secondary-btn">Edit Report</button>
                     <button id="admin-toggle-btn" class="secondary-btn">Admin Panel</button>
@@ -689,6 +694,7 @@
         const chartSection = document.getElementById('chart-section');
         const chartBox = document.getElementById('chart-box');
         const openReportBtn = document.getElementById('open-report-btn');
+        const saveImageBtn = document.getElementById('save-image-btn');
         const newChartBtn = document.getElementById('new-chart-btn');
         const editReportBtn = document.getElementById('edit-report-btn');
         const adminPanel = document.getElementById('admin-panel');
@@ -796,6 +802,9 @@
                                     <option value="after-personality" ${section.position === 'after-personality' ? 'selected' : ''}>After Personality Numbers</option>
                                     <option value="after-missing" ${section.position === 'after-missing' ? 'selected' : ''}>After Missing Numbers</option>
                                     <option value="before-footer" ${section.position === 'before-footer' ? 'selected' : ''}>Before Footer</option>
+                                    <option value="before-core" ${section.position === 'before-core' ? 'selected' : ''}>Before Core Numbers</option>
+                                    <option value="between-core-personality" ${section.position === 'between-core-personality' ? 'selected' : ''}>Between Core and Personality</option>
+                                    <option value="between-personality-missing" ${section.position === 'between-personality-missing' ? 'selected' : ''}>Between Personality and Missing</option>
                                 </select>
                             </div>
                         </div>
@@ -831,7 +840,10 @@
                 'after-core': 'After Core Numbers',
                 'after-personality': 'After Personality Numbers',
                 'after-missing': 'After Missing Numbers',
-                'before-footer': 'Before Footer'
+                'before-footer': 'Before Footer',
+                'before-core': 'Before Core Numbers',
+                'between-core-personality': 'Between Core and Personality',
+                'between-personality-missing': 'Between Personality and Missing'
             };
             return labels[position] || position;
         }
@@ -950,6 +962,23 @@
                 </div>
                 
                 <div class="chart-grid">
+            `;
+            
+            // Insert sections before core numbers if any
+            const beforeCoreSections = customSections.filter(s => s.position === 'before-core');
+            if (beforeCoreSections.length > 0) {
+                reportHTML += `
+                    <!-- Custom Sections Before Core Numbers -->
+                    ${beforeCoreSections.map(section => `
+                        <div class="chart-section">
+                            <h3 contenteditable="true" class="editable-title">${section.title}</h3>
+                            <div class="chart-value" contenteditable="true">${section.content}</div>
+                        </div>
+                    `).join('')}
+                `;
+            }
+            
+            reportHTML += `
                     <!-- Numbers Present Section -->
                     <div class="chart-section full-width">
                         <h3 contenteditable="true" class="editable-title">Numbers Present in Your Chart</h3>
@@ -966,7 +995,7 @@
                                 } else {
                                     return `
                                         <div class="number-box">
-                                            <div class="number-value">${num}</div>
+                                            <div class="number-value" style="visibility: hidden;">${num}</div>
                                             <div class="number-label"></div>
                                         </div>
                                     `;
@@ -1012,12 +1041,12 @@
                     </div>
             `;
             
-            // Insert sections after Core Numbers if any
-            const afterCoreSections = customSections.filter(s => s.position === 'after-core');
-            if (afterCoreSections.length > 0) {
+            // Insert sections between core and personality if any
+            const betweenCorePersonalitySections = customSections.filter(s => s.position === 'between-core-personality');
+            if (betweenCorePersonalitySections.length > 0) {
                 reportHTML += `
-                    <!-- Custom Sections After Core Numbers -->
-                    ${afterCoreSections.map(section => `
+                    <!-- Custom Sections Between Core and Personality -->
+                    ${betweenCorePersonalitySections.map(section => `
                         <div class="chart-section">
                             <h3 contenteditable="true" class="editable-title">${section.title}</h3>
                             <div class="chart-value" contenteditable="true">${section.content}</div>
@@ -1069,6 +1098,20 @@
                         </div>
                     </div>
             `;
+            
+            // Insert sections between personality and missing if any
+            const betweenPersonalityMissingSections = customSections.filter(s => s.position === 'between-personality-missing');
+            if (betweenPersonalityMissingSections.length > 0) {
+                reportHTML += `
+                    <!-- Custom Sections Between Personality and Missing -->
+                    ${betweenPersonalityMissingSections.map(section => `
+                        <div class="chart-section">
+                            <h3 contenteditable="true" class="editable-title">${section.title}</h3>
+                            <div class="chart-value" contenteditable="true">${section.content}</div>
+                        </div>
+                    `).join('')}
+                `;
+            }
             
             // Insert sections after Personality Numbers if any
             const afterPersonalitySections = customSections.filter(s => s.position === 'after-personality');
@@ -1269,7 +1312,7 @@
             // Create a new window
             const reportWindow = window.open('', '_blank');
             
-            // Get the report HTML
+            // Get the report HTML with all styles
             const reportHTML = `
                 <!DOCTYPE html>
                 <html>
@@ -1277,49 +1320,13 @@
                     <title>Numerology Report</title>
                     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
                     <style>
-                        body {
-                            font-family: 'Montserrat', sans-serif;
-                            padding: 20px;
-                            max-width: 1200px;
-                            margin: 0 auto;
-                        }
-                        h1, h2, h3 {
-                            font-family: 'Playfair Display', serif;
-                        }
-                        .numbers-grid {
-                            display: grid;
-                            grid-template-columns: repeat(3, 1fr);
-                            gap: 15px;
-                            margin: 20px 0;
-                        }
-                        .number-box {
-                            border: 1px solid #ddd;
-                            padding: 15px;
-                            text-align: center;
-                            border-radius: 5px;
-                        }
-                        .number-box.present {
-                            background-color: #f0f7f0;
-                            border-color: #c8e0c8;
-                        }
-                        .number-value {
-                            font-size: 24px;
-                            font-weight: bold;
-                            margin-bottom: 5px;
-                        }
-                        .number-box.present .number-value {
-                            color: #4caf50;
-                        }
-                        .chart-item {
-                            margin-bottom: 15px;
-                        }
-                        .chart-label {
-                            font-weight: bold;
-                        }
+                        ${document.querySelector('style').innerHTML}
                     </style>
                 </head>
                 <body>
-                    ${chartBox.innerHTML}
+                    <div class="chart-box">
+                        ${chartBox.innerHTML}
+                    </div>
                 </body>
                 </html>
             `;
@@ -1328,6 +1335,16 @@
             reportWindow.document.open();
             reportWindow.document.write(reportHTML);
             reportWindow.document.close();
+        });
+        
+        // Save as image
+        saveImageBtn.addEventListener('click', () => {
+            html2canvas(chartBox).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'numerology-report.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
         });
         
         // New chart button
